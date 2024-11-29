@@ -22,8 +22,8 @@ public class DomainTestService {
     }
 
     try {
-      //TODO use ProcessBuilder which looks cleaner
-      Process process = Runtime.getRuntime().exec(new String[] {"sh", "-c", "ping -c 1 " + domainName});
+      ProcessBuilder processBuilder = new ProcessBuilder("ping", "-c", "1", domainName);
+      Process process = processBuilder.start();
       if (!process.waitFor(timeoutMs, TimeUnit.MILLISECONDS)) {
         throw new UnableToTestDomainException("Timed out pinging domain");
       }
