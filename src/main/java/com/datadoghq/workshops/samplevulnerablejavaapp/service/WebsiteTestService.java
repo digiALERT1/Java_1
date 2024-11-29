@@ -15,6 +15,12 @@ public class WebsiteTestService {
     @Autowired
     private RestTemplate rest;
 
+    private boolean isValidUrl(String url) {
+        // Implement URL validation logic here
+        // For example, check if the URL starts with a specific prefix
+        return url.startsWith("http://allowed-domain.com") || url.startsWith("https://allowed-domain.com");
+    }
+
     public String testWebsite(WebsiteTestRequest request) {
         try {
             HttpHeaders headers = new HttpHeaders();
@@ -24,7 +30,11 @@ public class WebsiteTestService {
 
             HttpEntity<String> entity = new HttpEntity<>("", headers);
 
-            return this.rest.exchange(request.url, HttpMethod.GET, entity, String.class).getBody();
+            if (isValidUrl(request.url)) {
+                return this.rest.exchange(request.url, HttpMethod.GET, entity, String.class).getBody();
+            } else {
+                return "Invalid URL";
+            }
         } catch (HttpClientErrorException | HttpServerErrorException e) {
             return "URL returned status code: " + e.getStatusCode();
         }
